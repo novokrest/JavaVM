@@ -95,10 +95,18 @@
           ))
 
 (defmacro my-let
+
  [bindings & body]
- `(let ~bindings ~@body)
+
+  (if (or (not (vector? bindings)) (odd? (count bindings)))
+    (throw (Exception. "Incorrect bindings format")))
+
+  `((fn [~@(take-nth 2 bindings)] ~@body) ~@(take-nth 2 (rest bindings)))
  )
 
 ;; test
 
-(my-let [a (- 1 1) b (+ 0 1)] (println (= a 0) ) (println (= b 1)))
+(my-let [a (- 1 1) b (+ 0 1)]
+        (println (= a 0))
+        (println (= b 1))
+        )
